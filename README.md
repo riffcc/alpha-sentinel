@@ -1,10 +1,12 @@
-# sentinel
-Defender of the Universe
+# The Sentinel
+Defender of the Universe.
 
-# TODO
-* everything
+## Requirements
+* A copy of The Curator's database
+* Python 3.8+
+* psycopg2
 
-# Methodology
-* Uses the Riff.CC (Unit3D API) to fetch a list of all releases
-* Checks the descriptions of each
-* Unapproves any without a verifiable source that attests to the freely licenced status of it
+## Usage
+* Fill out ~/.rcc-tools.yml
+* `cd ~/projects/sentinel`
+* `python3 sentinel.py`
