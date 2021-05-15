@@ -3,9 +3,12 @@
 
 # Import needed modules
 from __future__ import with_statement
-import os, sys, yaml
+import os
+import sys
+import yaml
 import psycopg2
 from pynput import keyboard
+
 
 def on_press(key):
     try:
@@ -15,12 +18,14 @@ def on_press(key):
         print('special key {0} pressed'.format(
             key))
 
+
 def on_release(key):
     print('{0} released'.format(
         key))
     if key == keyboard.Key.esc:
         # Stop listener
         return False
+
 
 # Dynamically load in our magic config files
 configname = os.path.expanduser('~/.rcc-tools.yml')
@@ -60,5 +65,4 @@ with connpg.cursor() as cursor:
             with keyboard.Listener(
                     on_press=on_press,
                     on_release=on_release) as listener:
-                        print("how do I do stuff here? :)")
                 listener.join()
