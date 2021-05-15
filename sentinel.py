@@ -4,8 +4,23 @@
 # Import needed modules
 from __future__ import with_statement
 import os, sys, yaml
-import pymysql.cursors
 import psycopg2
+from pynput import keyboard
+
+def on_press(key):
+    try:
+        print('alphanumeric key {0} pressed'.format(
+            key.char))
+    except AttributeError:
+        print('special key {0} pressed'.format(
+            key))
+
+def on_release(key):
+    print('{0} released'.format(
+        key))
+    if key == keyboard.Key.esc:
+        # Stop listener
+        return False
 
 # Dynamically load in our magic config files
 configname = os.path.expanduser('~/.rcc-tools.yml')
@@ -30,11 +45,20 @@ connpg = psycopg2.connect(host=curator_host,
 # create a cursor
 cursorpg = connpg.cursor()
 
-with connpg:
-    with cursorpg.cursor() as cursor:
-        # Read everything from Unit3D (traditional site)
-        sql = "SELECT * FROM `releases`"
-        cursorpg.execute(sql)
-        result_set = cursorpg.fetchall()
-        for row in result_set:
-            print("TEST id "+ str(id))
+with connpg.cursor() as cursor:
+    # Read everything from Unit3D (traditional site)
+    sql = "SELECT id, name, description FROM releases"
+    cursorpg.execute(sql)
+    result_set = cursorpg.fetchall()
+    for row in result_set:
+        release_id = row[0]
+        name = row[1]
+        # print("Release ID: " + str(release_id) + " (Name: " + name + ")")
+        if " " not in name:
+            print("Found issue - " + str(release_id) + " may have an invalid name")
+            # Collect events until released
+            with keyboard.Listener(
+                    on_press=on_press,
+                    on_release=on_release) as listener:
+                        print("how do I do stuff here? :)")
+                listener.join()
